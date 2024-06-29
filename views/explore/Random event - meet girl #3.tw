@@ -11,7 +11,7 @@
 			<<if (settings.transEnabled)>>
 					<<set _probGirl = 94>><<set _probTGirl = 97>>
 			<</if>>
-			<<if (settings.transEnabled &amp;&amp; settings.gaysEnabled)>>
+			<<if (settings.transEnabled && settings.gaysEnabled)>>
 					<<set _probGirl = 84>><<set _probBoy = 94>><<set _probTGirl = 97>>
 			<</if>>
 <</if>>
@@ -23,7 +23,7 @@
 			<<if (settings.transEnabled)>>
 					<<set _probGirl = 94>><<set _probTGirl = 97>>
 			<</if>>
-			<<if (settings.transEnabled &amp;&amp; settings.gaysEnabled)>>
+			<<if (settings.transEnabled && settings.gaysEnabled)>>
 					<<set _probGirl = 47>><<set _probBoy = 94>><<set _probTGirl = 97>>
 			<</if>>
 <<elseif  (settings.orientationMC is 'gay')>>
@@ -34,12 +34,13 @@
 		<<if (settings.transEnabled)>>
 				<<set _probGirl = 86>><<set _probTGirl = 93>>
 		<</if>>
-		<<if (settings.transEnabled &amp;&amp; settings.gaysEnabled)>>
+		<<if (settings.transEnabled && settings.gaysEnabled)>>
 					<<set _probGirl = 10>><<set _probBoy = 94>><<set _probTGirl = 97>>
-			<</if>>
+		<</if>>
 <</if>>
-<!--<<print _probGirl>> <<print _probBoy>> <<print _probTGirl>> <<print _probTBoy>> -->
-<!-- girl -->
+/*===== <<print _probGirl>> <<print _probBoy>> <<print _probTGirl>> <<print _probTBoy>> ====*/
+
+/*======== Girl, Gender #0 ==========*/
 <<if (setup.percentageChance(_probGirl))>>
 	<<newgirl>>
 		<center>
@@ -54,7 +55,7 @@
 			<<set $tmpGirlCapture to true>>
 			<<set $tmpGirlInvite to true>>
 			<<unset $tmpGirlViewBack>>
-			<<if setup.getAge($tmpGirl) < 40 &amp;&amp; randomInteger(1,4) === 1>>
+			<<if setup.getAge($tmpGirl) < 40 && randomInteger(1,4) === 1>>
 				<<set $tmpGirl.pregnancy = randomInteger(10, 100)>>
 				<<set $tmpGirl.virgin = false>>
 			<</if>>
@@ -62,7 +63,8 @@
 			<<set $tmpGirlBack = 'Outside'>>
 			<<goto [[NPC view]]>>
 		<</link>>
-<!-- boy -->
+
+/*======== Boy, Gender #1 ==========*/
 <<elseif (setup.percentageChance(_probBoy))>>
 	<center>
 		<<if randomInteger(1,3) === 1>>
@@ -84,15 +86,16 @@
 		<<set $tmpGuy.rape to true>>
 		<<elseif set $tmpGuy.rape to false>>
 	<</if>>
-	<<set $tmpGuyCapture to true>>
-	<<set $tmpGuyInvite to true>>
+	<<set $tmpGirlCapture to true>>
+	<<set $tmpGirlInvite to true>>
 	<<unset $tmpGuyViewBack>>
 	<<unset $slaveId, $guestId, $charId, $childId>>
 	<<set $tmpGuyBack = 'Outside'>>
 	<<set $tmpGirl = setup.setSexuality($tmpGuy, _orientation)>>
 	<<goto [[NPC view]]>>
 <</link>>
-<!-- Tgirl -->
+
+/*======== TGirl, Gender #2 ==========*/
 <<elseif (setup.percentageChance(_probTGirl))>>
 	<center>
 		<<if randomInteger(1,2) === 1>>
@@ -104,7 +107,6 @@
 	<br /><br />
 	You notice a slightly masculine girl walking through the forest and decide to check out what she's doing.
 <br /><br />	
-
 <<link 'Go closer'>>
 	<<newtransgirl>>
 	<<set $tmpGuy.location = 'forest'>>
@@ -120,7 +122,8 @@
 	<<set $tmpGirl = setup.setSexuality($tmpGuy, _orientation)>>
 	<<goto [[NPC view]]>>
 <</link>>
-<!-- TBoy -->
+
+/*======== TBoy, Gender #3 ==========*/
 <<else>>
 	<center>
 		<<if randomInteger(1,3) === 1>>
@@ -134,7 +137,6 @@
 	<br /><br />
 	You notice a slightly femenine guy walking through the forest and decide to check out what he's doing.
 <br /><br />	
-
 		<<link 'Go closer'>>
 		<<newtransguy>>
 			<<set $tmpGirl.location = 'forest'>>
@@ -143,7 +145,7 @@
 			<<set $tmpGirlInvite to true>>
 			<<set $tmpGirl.gender = 4>>
 			<<unset $tmpGirlViewBack>>
-			<<if setup.getAge($tmpGirl) < 40 &amp;&amp; randomInteger(1,8) === 1>>
+			<<if setup.getAge($tmpGirl) < 40 && randomInteger(1,8) === 1>>
 				<<set $tmpGirl.pregnancy = randomInteger(10, 100)>>
 				<<set $tmpGirl.virgin = false>>
 			<</if>>
@@ -151,5 +153,4 @@
 			<<set $tmpGirlBack = 'Outside'>>
 			<<goto [[NPC view]]>>
 		<</link>>	
-	
 <</if>>

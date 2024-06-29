@@ -1,8 +1,9 @@
-:: NPC view [sex no-redirect girlview] {"position":"5012,30","size":"100,100"}
+</tw-passagedata><tw-passagedata pid="325" name="NPC view" tags="sex no-redirect girlview" position="5012,30" size="100,100">
 <<set _heOrShe = setup.pronounceWhat($tmpGirl)>>
 <<set _hisOrHer = setup.pronounceWhos($tmpGirl)>>
 <<set _himOrHer = setup.pronounceWho($tmpGirl)>>
 
+/*======== Talk ========*/
 <<if !$tmpGirl.talked>>
 	<<link 'Talk'>>
 		<<set $tmpGirl.relationship = Math.min($tmpGirl.relationship + 3, 100)>>
@@ -13,9 +14,13 @@
 	<</link>>
 <</if>>
 
+/*======== Rape ========*/
+<<print $tmpGirl.gender>>
+
 <<if $player.energy >= 30 && $tmpGirl.location !== 'garden'>>
-  <<if !$tmpGirl.gender && $tmpGirl.rape>>
-	  <<link 'Try to rape her'>>
+  <<if (([0,2].includes($tmpGirl.gender) &&  $tmpGirl.rape && $slaveId == undefined) or (settings.gaysEnabled &&  $tmpGuy.rape && $slaveId == undefined))>>
+		<<set _linkName = 'Try to rape ' + _himOrHer;>>
+	  <<link `_linkName`>>
 		  <<if $player.strength < $tmpGirl.strength>>
 			  <<goto 'Girl escape'>>
 		  <<else>>
@@ -34,8 +39,24 @@
   <<include 'Girl invite - include'>>
 <</if>>
 
-<<if !$tmpGirl.gender && $game.location.basement && $tmpGirlCapture && $slaves.length < $basementLimit && $player.energy >= 30>>
-	<<link 'Try to capture her'>>
+/*======== Try to capture ========*/
+<<if ([0,2].includes($tmpGirl.gender) && $game.location.basement && $tmpGirlCapture && $slaves.length < $basementLimit && $player.energy >= 30)>>
+	<<set _linkName = 'Try to capture ' + _himOrHer;>>
+	<<link  `_linkName`>>
+		<<if $player.strength > $tmpGirl.strength>>
+			<<set $tmpGirl.capture = false>>
+			<<set $slaves.push($tmpGirl)>>
+			<<addhours 2>>
+			<<energy -30>>
+			<<statsAdd 'people_captured'>>
+			<<goto 'Basement'>>
+		<<else>>
+			<<goto 'Girl escape'>>
+		<</if>>
+	<</link>>
+<<else>>
+<<set _linkName = 'Try to capture ' + _himOrHer;>>
+	<<link  `_linkName`>>
 		<<if $player.strength > $tmpGirl.strength>>
 			<<set $tmpGirl.capture = false>>
 			<<set $slaves.push($tmpGirl)>>
@@ -48,6 +69,24 @@
 		<</if>>
 	<</link>>
 <</if>>
+
+
+<<if ([1,3].includes($tmpGirl.gender) && !setup.orientationMC === 'hetero' && $game.location.basement && $tmpGirlCapture && $slaves.length < $basementLimit && $player.energy >= 30)>>
+	<<set _linkName = 'Try to capture ' + _himOrHer;>>
+	<<link  `_linkName`>>
+		<<if $player.strength > $tmpGirl.strength>>
+			<<set $tmpGirl.capture = false>>
+			<<set $slaves.push($tmpGirl)>>
+			<<addhours 2>>
+			<<energy -30>>
+			<<statsAdd 'people_captured'>>
+			<<goto 'Basement'>>
+		<<else>>
+			<<goto 'Girl escape'>>
+		<</if>>
+	<</link>>
+<</if>>
+
 
 <<if !$tmpGirl.gender && $tmpGirl.location === 'garden'>>
 	<<if $player.energy >= 20>>
@@ -78,7 +117,7 @@
 	<</link>>
 <</if>>
 
-<<if [0,2].includes($tmpGirl.gender) && $tmpGirl.relationship >= 50 && $slaveId !== undefined && !$tmpGirl.assignedTo>>
+<<if $tmpGirl.relationship >= 50 && $slaveId !== undefined && !$tmpGirl.assignedTo>>
 	<<link 'Assign to streets'>>
 		<<assignedTo $tmpGirl 'streets'>>
 		<<if $tmpGirlBack>>
@@ -92,7 +131,7 @@
 <</if>>
 
 <<set _availableGirlSlaves = setup.getAvailablePersons18yo($slaves)>>
-<<if $tmpGirl.gender == 1 && (_availableGirlSlaves[0] ?? []).length && !$tmpGirl.offerSlave>>
+<<if $tmpGirl.gender == 1 && (_availableGirlSlaves[0] ?? []).length && !$tmpGirl.location === 'forest' && !$tmpGirl.offerSlave>>
 	<<link 'Offer him one of your slave girls'>>
 		<<script>>
 			Dialog.setup("Basement - Offer slave", "Basement - Offer slave");
@@ -103,7 +142,7 @@
 <</if>>
 
 <<set _availableGuySlaves = setup.getAvailablePersons18yo($slaves)>>
-<<if settings.gaysEnabled && $tmpGirl.gender == 1 && (_availableGuySlaves[1] ?? []).length > 1 && !$tmpGirl.offerSlave>>
+<<if settings.gaysEnabled && $tmpGirl.gender == 1 && !$tmpGirl.location === 'forest' && (_availableGuySlaves[1] ?? []).length > 1 && !$tmpGirl.offerSlave>>
 	<<link 'Offer him one of your slave guys'>>
 		<<script>>
 			Dialog.setup("Basement - Offer slave", "Basement - Offer slave");
@@ -114,7 +153,7 @@
 <</if>>
 
 <<set _availableTGirlsSlaves = setup.getAvailablePersons18yo($slaves)>>
-<<if settings.transEnabled && $tmpGirl.gender == 1 && (_availableTGirlsSlaves[2] ?? []).length && !$tmpGirl.offerSlave>>
+<<if settings.transEnabled&& !$tmpGirl.location === 'forest' && $tmpGirl.gender == 1 && (_availableTGirlsSlaves[2] ?? []).length && !$tmpGirl.offerSlave>>
 	<<link 'Offer him one of your slave trans girls'>>
 		<<script>>
 			Dialog.setup("Basement - Offer slave", "Basement - Offer slave");
@@ -125,7 +164,7 @@
 <</if>>
 
 <<set _availableGuySlaves = setup.getAvailablePersons18yo($slaves)>>
-<<if settings.gaysEnabled && $tmpGirl.gender == 2 && (_availableGuySlaves[1] ?? []).length > 0 && !$tmpGirl.offerSlave>>
+<<if settings.gaysEnabled&& !$tmpGirl.location === 'forest' && $tmpGirl.gender == 2 && (_availableGuySlaves[1] ?? []).length > 0 && !$tmpGirl.offerSlave>>
 	<<link 'Offer her one of your slave guys'>>
 		<<script>>
 			Dialog.setup("Basement - Offer slave", "Basement - Offer slave");
@@ -232,10 +271,6 @@
 	<</link>>
 <</if>>
 
-<<link 'Release'>>
-	<<goto 'Basement - release slave'>>
-<</link>>
-
 <<link 'Go back'>>
 	<<if typeof $slaveId !== 'undefined'>>
 		<<set $slaves[$slaveId] = $tmpGirl>>
@@ -250,6 +285,3 @@
 	<<else>>
 		<<goto 'Outside'>>
 	<</if>>
-<</link>>
-
-
