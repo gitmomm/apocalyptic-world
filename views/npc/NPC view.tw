@@ -17,7 +17,7 @@
 /*======== Rape ========*/
 <<print $tmpGirl.gender>>
 
-<<if $player.energy >= 30 && $tmpGirl.location !== 'garden'>>
+<<if $player.energy >= 30 && $tmpGirl.location !== 'garden' && $tempGirl.location !== 'basement'>>
   <<if (([0,2].includes($tmpGirl.gender) &&  $tmpGirl.rape && $slaveId == undefined) or (settings.gaysEnabled &&  $tmpGuy.rape && $slaveId == undefined))>>
 		<<set _linkName = 'Try to rape ' + _himOrHer;>>
 	  <<link `_linkName`>>
